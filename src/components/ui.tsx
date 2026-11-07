@@ -1,0 +1,231 @@
+import Link from 'next/link';
+import type { ReactNode } from 'react';
+import { ArrowRight, Info, MessageCircle, MapPin, ShieldCheck } from 'lucide-react';
+import { SITE, BENCH, DISCLOSURE_SHORT, DISCLOSURE_FULL, fullAddress, waLink } from '@/data/site';
+import type { Faq as FaqT } from '@/data/products';
+
+export const aed = (n: number) => `AED ${Math.round(n).toLocaleString('en-US')}`;
+export const aedM = (n: number) => `AED ${n >= 10 ? n.toFixed(1) : n.toFixed(2)}M`;
+
+export function JsonLd({ data }: { data: object }) {
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />;
+}
+
+export function UtilityBar() {
+  return (
+    <div className="bg-navy text-[13px] text-white/80">
+      <div className="wrap flex h-9 items-center justify-between gap-6 overflow-hidden whitespace-nowrap">
+        <p className="hidden truncate md:block">
+          <ShieldCheck size={14} className="me-1.5 inline -translate-y-px text-mint" />
+          CBUAE-registered advisory · 0% client brokerage fee · Salaried, non-commission underwriters · {SITE.address.building}, {SITE.address.district}
+        </p>
+        <p className="num ms-auto">
+          <Link href="/rates/eibor-live-tracker" className="ulink">3M EIBOR <b className="text-white">{BENCH.eibor3m}%</b></Link>
+          <span className="mx-3 text-white/30">|</span>
+          <Link href="/rates/uae-mortgage-rates-eibor-revert-bible" className="ulink">Fixed from <b className="text-mint">{BENCH.lowestFixed}%*</b></Link>
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export function Disclosure({ dark = false }: { dark?: boolean }) {
+  return (
+    <details className={`group mt-4 max-w-2xl text-xs ${dark ? 'text-white/60' : 'text-slate'}`}>
+      <summary className="cursor-pointer list-none">
+        {DISCLOSURE_SHORT} <span className={`inline-flex items-center gap-1 font-semibold underline-offset-2 hover:underline ${dark ? 'text-mint' : 'text-teal'}`}><Info size={12} /> View full CBUAE rate & EIBOR reversion disclosure</span>
+      </summary>
+      <p className="mt-2 leading-relaxed">{DISCLOSURE_FULL}</p>
+    </details>
+  );
+}
+
+export function Crumbs({ items }: { items: { name: string; href: string }[] }) {
+  const all = [{ name: 'Home', href: '/' }, ...items];
+  return (
+    <>
+      <nav aria-label="Breadcrumb" className="text-sm text-slate">
+        <ol className="flex flex-wrap items-center gap-1.5">
+          {all.map((c, i) => (
+            <li key={c.href} className="flex items-center gap-1.5">
+              {i > 0 && <span aria-hidden="true" className="text-line">/</span>}
+              {i < all.length - 1 ? <Link href={c.href} className="hover:text-teal">{c.name}</Link> : <span aria-current="page" className="text-navy">{c.name}</span>}
+            </li>
+          ))}
+        </ol>
+      </nav>
+      <JsonLd data={{ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: all.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.name, item: SITE.url + c.href })) }} />
+    </>
+  );
+}
+
+/** Standard page header: breadcrumbs, H1, 50-word AEO citation capsule, actions. */
+export function PageHero({ crumbs, eyebrow, title, capsule, children, aside, updated = true }: {
+  crumbs: { name: string; href: string }[]; eyebrow?: string; title: string; capsule?: string; children?: ReactNode; aside?: ReactNode; updated?: boolean;
+}) {
+  return (
+    <section className="border-b border-line bg-mist">
+      <div className="wrap py-10 lg:py-14">
+        <Crumbs items={crumbs} />
+        <div className={`mt-6 grid gap-10 ${aside ? 'lg:grid-cols-[1.25fr_1fr] lg:items-start' : ''}`}>
+          <div>
+            {eyebrow && <p className="eyebrow mb-3">{eyebrow}</p>}
+            <h1 className="h1 max-w-4xl !text-[2rem] sm:!text-[2.6rem] lg:!text-[3rem]">{title}</h1>
+            {capsule && (
+              <div className="mt-6 max-w-3xl border-s-4 border-teal bg-white p-5 shadow-sm" data-capsule>
+                <p className="text-[15px] leading-relaxed text-ink">{capsule}</p>
+                {updated && <p className="mt-3 text-xs text-slate">Reviewed by the Betterway underwriting desk · Updated {SITE.asOf}</p>}
+              </div>
+            )}
+            {children}
+          </div>
+          {aside}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function Section({ id, title, eyebrow, intro, children, tone = 'white', action }: { id?: string; title: string; eyebrow?: string; intro?: string; children: ReactNode; tone?: 'white' | 'mist' | 'navy'; action?: { label: string; href: string } }) {
+  const bg = tone === 'mist' ? 'bg-mist' : tone === 'navy' ? 'bg-navy text-white' : 'bg-white';
+  return (
+    <section id={id} className={`${bg} py-16 lg:py-20`}>
+      <div className="wrap">
+        <div className="mb-10 flex flex-wrap items-end justify-between gap-6">
+          <div className="max-w-3xl">
+            {eyebrow && <p className={`eyebrow mb-3 ${tone === 'navy' ? '!text-mint' : ''}`}>{eyebrow}</p>}
+            <h2 className={`h2 ${tone === 'navy' ? '!text-white' : ''}`}>{title}</h2>
+            {intro && <p className={`mt-4 text-lg leading-relaxed ${tone === 'navy' ? 'text-white/70' : 'text-slate'}`}>{intro}</p>}
+          </div>
+          {action && <Link href={action.href} className={`btn ${tone === 'navy' ? 'btn-light' : 'btn-ghost'}`}>{action.label} <ArrowRight size={15} /></Link>}
+        </div>
+        {children}
+      </div>
+    </section>
+  );
+}
+
+export function Facts({ facts }: { facts: [string, string][] }) {
+  return (
+    <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-card border border-line bg-line sm:grid-cols-3">
+      {facts.map(([k, v]) => (
+        <div key={k} className="bg-white p-5 max-sm:odd:last:col-span-2 sm:[&:nth-child(3n+1):last-child]:col-span-3">
+          <dt className="text-xs font-medium uppercase tracking-wide text-slate">{k}</dt>
+          <dd className={`mt-1.5 text-lg font-semibold text-navy ${/^[\d+−-]|^AED|^3M/.test(v) ? 'num' : 'font-display'}`}>{v}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+export function FaqList({ faqs }: { faqs: FaqT[] }) {
+  if (!faqs.length) return null;
+  return (
+    <>
+      <div className="divide-y divide-line rounded-card border border-line bg-white">
+        {faqs.map((f) => (
+          <details key={f.q} className="group p-5">
+            <summary className="flex cursor-pointer list-none items-start justify-between gap-4 font-semibold text-navy">
+              {f.q}<span className="mt-0.5 text-teal transition group-open:rotate-45" aria-hidden="true">+</span>
+            </summary>
+            <p className="mt-3 leading-relaxed text-slate">{f.a}</p>
+          </details>
+        ))}
+      </div>
+      <JsonLd data={{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }} />
+    </>
+  );
+}
+
+export function LinkGrid({ links, cols = 3 }: { links: { title: string; body?: string; href: string; tag?: string }[]; cols?: 2 | 3 | 4 }) {
+  const c = cols === 4 ? 'lg:grid-cols-4' : cols === 2 ? 'lg:grid-cols-2' : 'lg:grid-cols-3';
+  return (
+    <div className={`grid gap-4 sm:grid-cols-2 ${c}`}>
+      {links.map((l) => (
+        <Link key={l.href} href={l.href} className="card group flex flex-col">
+          {l.tag && <span className="tag mb-3 self-start">{l.tag}</span>}
+          <span className="font-display text-[17px] font-semibold text-navy group-hover:text-teal">{l.title}</span>
+          {l.body && <span className="mt-2 text-sm leading-relaxed text-slate">{l.body}</span>}
+          <span className="mt-auto pt-4 text-sm font-semibold text-teal">Open <ArrowRight size={14} className="inline transition group-hover:translate-x-0.5" /></span>
+        </Link>
+      ))}
+    </div>
+  );
+}
+
+export function CtaBand({ title = 'Compare all 24 banks with one application', body = 'A salaried underwriter at Al Nasr Plaza builds your side-by-side offer matrix—rates, revert margins, floors and fees—at zero brokerage cost to you.' }: { title?: string; body?: string }) {
+  return (
+    <section className="bg-white py-16">
+      <div className="wrap">
+        <div className="grid items-center gap-8 rounded-[28px] bg-navy p-8 text-white sm:p-12 lg:grid-cols-[1.4fr_1fr]">
+          <div>
+            <h2 className="h2 !text-white">{title}</h2>
+            <p className="mt-4 max-w-2xl text-white/70">{body}</p>
+          </div>
+          <div className="flex flex-col gap-3 sm:flex-row lg:justify-end">
+            <Link href="/contact" className="btn btn-primary">Get pre-approved in 48h <ArrowRight size={15} /></Link>
+            <a href={waLink()} className="btn btn-light" rel="noopener"><MessageCircle size={16} /> WhatsApp the desk</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const FOOT: { title: string; links: [string, string][] }[] = [
+  { title: 'Mortgages', links: [['Expat residents', '/mortgages/uae-residents'], ['UAE Nationals', '/mortgages/uae-nationals'], ['Non-resident', '/mortgages/non-resident-dubai'], ['Golden Visa', '/mortgages/golden-visa-mortgage'], ['Islamic finance', '/mortgages/islamic-home-finance'], ['Switch bank', '/mortgages/mortgage-buyout-refinance'], ['All products', '/mortgages']] },
+  { title: 'Rates & tools', links: [['24-bank rate bible', '/rates/uae-mortgage-rates-eibor-revert-bible'], ['EIBOR tracker', '/rates/eibor-live-tracker'], ['Mortgage calculator', '/calculators/mortgage-calculator'], ['DBR calculator', '/calculators/dbr-borrowing-power'], ['Form F clauses', '/tools/form-f-clause-generator'], ['All calculators', '/calculators']] },
+  { title: 'Explore', links: [['Off-plan handover', '/handover/dubai-off-plan-handover-mortgage-guide'], ['Areas & yields', '/areas'], ['Affordability', '/affordability'], ['Guides', '/guides'], ['Advisory', '/advisory'], ['Sitemap', '/sitemap']] },
+  { title: 'Company', links: [['About us', '/about-us'], ['Why not go direct?', '/why-betterway-vs-direct-bank'], ['Underwriters', '/our-underwriters'], ['Reviews', '/reviews'], ['Careers', '/careers'], ['Contact', '/contact'], ['For agents', '/partners']] },
+];
+
+export function Footer() {
+  return (
+    <footer className="bg-navy text-white/75">
+      <div className="wrap grid gap-10 py-14 lg:grid-cols-[1.3fr_repeat(4,1fr)]">
+        <div>
+          <img src="/brand/logo-white.svg" alt="Betterway Mortgage" width={180} height={54} className="h-11 w-auto" />
+          <p className="mt-5 flex gap-2 text-sm"><MapPin size={16} className="mt-0.5 shrink-0 text-mint" />{fullAddress}</p>
+          <p className="mt-3 text-sm"><a href={SITE.phoneHref} className="ulink">{SITE.phone}</a> · <a href={`mailto:${SITE.email}`} className="ulink">{SITE.email}</a></p>
+          <p className="mt-1 text-sm">{SITE.hours}</p>
+          <p className="mt-4 text-xs text-white/50">{SITE.licence}</p>
+        </div>
+        {FOOT.map((g) => (
+          <div key={g.title}>
+            <p className="mb-4 text-sm font-semibold text-white">{g.title}</p>
+            <ul className="space-y-2.5 text-sm">
+              {g.links.map(([l, h]) => <li key={h}><Link href={h} className="ulink hover:text-white">{l}</Link></li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+      <div className="border-t border-white/10">
+        <div className="wrap space-y-3 py-6 text-xs text-white/50">
+          <p>{DISCLOSURE_FULL}</p>
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <p>© 2026 {SITE.legalName}. All rights reserved.</p>
+            <p className="flex gap-4"><Link href="/privacy-and-cbuae-disclosure" className="ulink">Privacy & CBUAE disclosure</Link><Link href="/llms.txt" className="ulink">llms.txt</Link><Link href="/ar" lang="ar" className="ulink">العربية</Link></p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+export function orgSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': ['FinancialService', 'LocalBusiness'],
+    '@id': `${SITE.url}/#org`,
+    name: SITE.name,
+    url: SITE.url,
+    logo: `${SITE.url}/brand/logo-primary.svg`,
+    image: `${SITE.url}/og.png`,
+    telephone: SITE.phone,
+    email: SITE.email,
+    priceRange: 'AED 0 client fee',
+    address: { '@type': 'PostalAddress', streetAddress: `${SITE.address.building}, ${SITE.address.plot}, ${SITE.address.street}`, addressLocality: SITE.address.district, addressRegion: 'Dubai', addressCountry: 'AE' },
+    areaServed: ['Dubai', 'Abu Dhabi', 'Sharjah', 'Ras Al Khaimah'],
+    openingHours: 'Mo-Sa 09:00-19:00',
+  };
+}

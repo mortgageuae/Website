@@ -1,0 +1,90 @@
+// Single source of truth for corporate facts, market benchmarks and contact details.
+// Values marked TODO must be confirmed by Betterway before going live.
+
+export const SITE = {
+  name: 'Betterway Mortgages',
+  legalName: 'Betterway Mortgages',
+  url: 'https://betterwaymortgages.com',
+  portalUrl: 'https://portal.betterwaymortgages.com',
+  hubUrl: 'https://hub.betterwaymortgages.com',
+  address: {
+    building: 'Al Nasr Plaza',
+    plot: 'Plot 319-310',
+    street: 'Oud Metha Road',
+    district: 'Oud Metha',
+    city: 'Dubai',
+    country: 'United Arab Emirates',
+    countryCode: 'AE',
+  },
+  // TODO: replace with the real desk numbers, licence and e-mail before launch.
+  phone: '+971 4 000 0000',
+  phoneHref: 'tel:+97140000000',
+  whatsapp: '971500000000',
+  email: 'hello@betterwaymortgages.com',
+  licence: 'DED / RERA licence no. — to be inserted',
+  hours: 'Mon–Sat 09:00–19:00 GST',
+  asOf: 'November 2026',
+  asOfISO: '2026-11-07',
+} as const;
+
+export const fullAddress = `${SITE.address.building}, ${SITE.address.plot}, ${SITE.address.street}, ${SITE.address.district}, ${SITE.address.city}, UAE`;
+
+export const waLink = (text = 'Hi Betterway, I would like a mortgage quote.') =>
+  `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(text)}`;
+
+/** CBUAE / EIBOR benchmarks, November 2026 (Market Bible, Module 1.2). */
+export const BENCH = {
+  baseRate: 3.9,
+  eibor1m: 4.09,
+  eibor3m: 4.45,
+  eibor6m: 4.41,
+  lowestFixed: 3.75,
+  bankCount: 24,
+  // Dubai market (Module 1.1)
+  dldYtdAedBn: 359.35,
+  dldYtdSales: 115989,
+  medianPsf: 1694,
+  offPlanShare: 71.6,
+} as const;
+
+/** EIBOR history for the live tracker (monthly fixings, % p.a.). Indicative series ending at the Nov 2026 fixing. */
+export const EIBOR_SERIES: { m: string; m1: number; m3: number; m6: number }[] = [
+  { m: 'Dec 25', m1: 4.31, m3: 4.6, m6: 4.66 },
+  { m: 'Jan 26', m1: 4.29, m3: 4.58, m6: 4.64 },
+  { m: 'Feb 26', m1: 4.27, m3: 4.57, m6: 4.62 },
+  { m: 'Mar 26', m1: 4.26, m3: 4.56, m6: 4.6 },
+  { m: 'Apr 26', m1: 4.24, m3: 4.55, m6: 4.59 },
+  { m: 'May 26', m1: 4.23, m3: 4.55, m6: 4.58 },
+  { m: 'Jun 26', m1: 4.22, m3: 4.54, m6: 4.57 },
+  { m: 'Jul 26', m1: 4.21, m3: 4.53, m6: 4.56 },
+  { m: 'Aug 26', m1: 4.2, m3: 4.52, m6: 4.55 },
+  { m: 'Sep 26', m1: 4.12, m3: 4.48, m6: 4.47 },
+  { m: 'Oct 26', m1: 4.1, m3: 4.46, m6: 4.43 },
+  { m: 'Nov 26', m1: 4.09, m3: 4.45, m6: 4.41 },
+];
+
+/** CBUAE LTV caps (Module 6 guardrails). */
+export const LTV_RULES = [
+  { profile: 'UAE National — first home ≤ AED 5M', ltv: '85%', down: '15%' },
+  { profile: 'UAE National — first home > AED 5M', ltv: '75%', down: '25%' },
+  { profile: 'Expat resident — first home ≤ AED 5M', ltv: '80%', down: '20%' },
+  { profile: 'Expat resident — first home > AED 5M', ltv: '70%', down: '30%' },
+  { profile: 'Second / investment home', ltv: '60–65%', down: '35–40%' },
+  { profile: 'Non-resident', ltv: '50–65%', down: '35–50%' },
+  { profile: 'Off-plan under construction', ltv: '50%', down: '50%' },
+];
+
+export const RULES = [
+  { k: 'Maximum Debt Burden Ratio', v: '50% of gross monthly income' },
+  { k: 'Credit card limits counted as debt', v: '5% of total limits (3% at HSBC, ADCB, DIB)' },
+  { k: 'Maximum tenure', v: '25 years' },
+  { k: 'Age at maturity', v: '65 salaried · 70 self-employed & UAE Nationals' },
+  { k: 'Early settlement cap', v: '1% of outstanding or AED 10,000, whichever is lower (+5% VAT)' },
+  { k: 'Down payment source', v: 'Cannot be funded by a UAE personal loan' },
+];
+
+export const DISCLOSURE_SHORT =
+  '*Illustrative lowest advertised fixed rate across our 24-bank panel. Subject to bank credit approval and salary transfer.';
+
+export const DISCLOSURE_FULL =
+  'Rates shown reflect the lowest advertised introductory fixed tier across our 24-bank panel as of November 2026 and require meeting specific lender criteria (including minimum salary transfer, LTV ratio, and approved employer/property lists). Following the initial fixed period (1 to 5 years), loans revert to the bank’s variable rate (3-Month EIBOR plus a fixed bank margin, subject to a minimum floor rate specified in your Final Offer Letter). Betterway Mortgages is remunerated directly by the lending bank upon successful disbursal—there is no client brokerage fee.';
