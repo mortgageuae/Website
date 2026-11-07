@@ -64,3 +64,9 @@ test('overpayment saves interest', () => {
   const r = overpayment(1_500_000, 4.5, 25, 100_000);
   assert.ok(r.saved > 0 && r.months < 300);
 });
+
+test('blueprint inventory has exactly 360 unique URLs', async () => {
+  const { ROUTES } = await import('./routes.ts');
+  assert.equal(ROUTES.length, 360);
+  assert.equal(new Set(ROUTES.map((r) => r.path)).size, 360);
+});
