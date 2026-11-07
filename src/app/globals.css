@@ -1,0 +1,81 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/plus-jakarta-sans';
+@import '@fontsource-variable/jetbrains-mono';
+@import '@fontsource/ibm-plex-sans-arabic/400.css';
+@import '@fontsource/ibm-plex-sans-arabic/600.css';
+
+/* Betterway brand kit v1.0 tokens (05_Brand_Guide/design-tokens.json) */
+@theme {
+  --color-teal: #007d78;
+  --color-teal-700: #00615d;
+  --color-teal-50: #e6f2f1;
+  --color-navy: #081d37;
+  --color-navy-800: #102a4a;
+  --color-mist: #f2f7f6;
+  --color-slate: #51616e;
+  --color-ink: #0f1e2e;
+  --color-line: #dbe5e3;
+  --color-mint: #6fe3c9;
+  --color-warn: #b45309;
+  --font-sans: 'Inter Variable', Arial, sans-serif;
+  --font-display: 'Plus Jakarta Sans Variable', 'Inter Variable', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+  --font-arabic: 'IBM Plex Sans Arabic', 'Inter Variable', sans-serif;
+  --radius-btn: 12px;
+  --radius-card: 20px;
+}
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; scroll-padding-top: 96px; }
+  body { @apply bg-white font-sans text-ink antialiased; }
+  html[lang='ar'] body { font-family: var(--font-arabic); }
+  h1, h2, h3, h4 { @apply font-display text-navy; letter-spacing: -0.02em; text-wrap: balance; }
+  html[lang='ar'] :is(h1, h2, h3, h4) { font-family: var(--font-arabic); letter-spacing: 0; }
+  p { text-wrap: pretty; }
+  ::selection { background: var(--color-teal); color: white; }
+  :focus-visible { outline: 2px solid var(--color-teal); outline-offset: 2px; border-radius: 6px; }
+}
+
+@layer components {
+  .wrap { @apply mx-auto w-full max-w-[1240px] px-4 sm:px-6 lg:px-8; }
+  .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+  .eyebrow { @apply text-xs font-semibold uppercase tracking-[0.14em] text-teal; }
+  .lead { @apply text-lg leading-relaxed text-slate; }
+  .h1 { @apply text-[2.15rem] font-bold leading-[1.08] sm:text-5xl lg:text-[3.5rem]; }
+  .h2 { @apply text-[1.75rem] font-bold leading-tight sm:text-4xl; }
+  .h3 { @apply text-lg font-semibold leading-snug; }
+
+  .btn { @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-btn px-5 py-3 text-sm font-semibold transition duration-150 select-none; }
+  .btn:hover { transform: translateY(-1px); }
+  .btn:active { transform: translateY(0) scale(0.98); }
+  .btn-primary { @apply bg-teal text-white hover:bg-teal-700; }
+  .btn-dark { @apply bg-navy text-white hover:bg-navy-800; }
+  .btn-ghost { @apply border border-line bg-white text-navy hover:border-teal hover:text-teal; }
+  .btn-light { @apply bg-white text-navy hover:bg-mist; }
+
+  .card { @apply rounded-card border border-line bg-white p-6 transition duration-200; }
+  a.card:hover, .card-link:hover { @apply border-teal/40; transform: translateY(-2px); box-shadow: 0 12px 30px -16px rgb(8 29 55 / 0.25); }
+  .chip { @apply rounded-full border border-line bg-white px-3.5 py-1.5 text-sm font-medium text-navy transition hover:border-teal; }
+  .chip-on { @apply border-teal bg-teal text-white hover:border-teal; }
+  .tag { @apply inline-flex items-center rounded-full bg-teal-50 px-2.5 py-1 text-xs font-semibold text-teal-700; }
+
+  .ulink { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size 0.25s ease; }
+  .ulink:hover { background-size: 100% 1px; }
+  .prose-bw p { @apply mb-4 leading-relaxed text-slate; }
+
+  .table-bw { @apply w-full border-collapse text-sm; }
+  .table-bw th { @apply bg-mist px-3 py-3 text-start text-xs font-semibold uppercase tracking-wide text-slate; }
+  .table-bw td { @apply border-t border-line px-3 py-3 align-top; }
+  .table-bw tbody tr:hover td { @apply bg-mist/60; }
+
+  .range { appearance: none; height: 6px; border-radius: 99px; background: var(--color-line); accent-color: var(--color-teal); cursor: pointer; }
+  .range::-webkit-slider-thumb { appearance: none; width: 22px; height: 22px; border-radius: 50%; background: white; border: 6px solid var(--color-teal); box-shadow: 0 1px 4px rgb(0 0 0 / 0.2); }
+  .range::-moz-range-thumb { width: 12px; height: 12px; border-radius: 50%; background: white; border: 6px solid var(--color-teal); }
+
+  .grid-bg { background-image: linear-gradient(to right, rgb(8 29 55 / 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgb(8 29 55 / 0.05) 1px, transparent 1px); background-size: 48px 48px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
