@@ -41,7 +41,7 @@ export function ArSection({ title, children, tone = 'white', id }: { title: stri
 export function ArFacts({ facts }: { facts: [string, string][] }) {
   return (
     <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-card border border-line bg-line sm:grid-cols-3">
-      {facts.map(([k, v]) => <div key={k} className="bg-white p-5"><dt className="text-sm text-slate">{k}</dt><dd className="num mt-1.5 text-lg font-semibold text-navy" dir="ltr" style={{ textAlign: 'right' }}>{v}</dd></div>)}
+      {facts.map(([k, v]) => <div key={k} className="bg-white p-5 max-sm:odd:last:col-span-2 sm:[&:nth-child(3n+1):last-child]:col-span-3"><dt className="text-sm text-slate">{k}</dt><dd className="num mt-1.5 text-lg font-semibold text-navy" dir="ltr" style={{ textAlign: 'right' }}>{v}</dd></div>)}
     </dl>
   );
 }

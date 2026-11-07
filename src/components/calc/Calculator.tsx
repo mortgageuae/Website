@@ -6,12 +6,13 @@ import { CALCS, type Row } from './registry';
 type Lang = 'en' | 'ar';
 const aed = (n: number) => `AED ${Math.round(n).toLocaleString('en-US')}`;
 
-export function fmt(r: Row) {
+export function fmt(r: Row, lang: Lang = 'en') {
+  const mo = lang === 'ar' ? ' شهرياً' : '/mo', yrs = lang === 'ar' ? ' سنة' : ' yrs';
   if (typeof r.v === 'string') return r.v;
   switch (r.f) {
     case 'pct': return `${r.v.toFixed(2)}%`;
-    case 'mo': return `${aed(r.v)}/mo`;
-    case 'yrs': return `${r.v.toFixed(1)} yrs`;
+    case 'mo': return `${aed(r.v)}${mo}`;
+    case 'yrs': return `${r.v.toFixed(1)}${yrs}`;
     case 'raw': return String(r.v);
     default: return aed(r.v);
   }
@@ -56,12 +57,12 @@ export default function Calculator({ slug, lang = 'en', compact = false, initial
 
       <div className="rounded-card bg-navy p-6 text-white" aria-live="polite">
         <p className="text-sm text-white/70">{out.hero.label[lang]}</p>
-        <p className="num mt-1 text-3xl font-semibold tracking-tight sm:text-4xl">{fmt(out.hero)}</p>
+        <p className="num mt-1 text-3xl font-semibold tracking-tight sm:text-4xl">{fmt(out.hero, lang)}</p>
         <dl className="mt-5 divide-y divide-white/10 text-sm">
           {out.rows.map((r) => (
             <div key={r.label.en} className="flex items-baseline justify-between gap-4 py-2">
               <dt className={r.strong ? 'font-semibold' : 'text-white/75'}>{r.label[lang]}</dt>
-              <dd className={`num text-end ${r.strong ? 'font-semibold text-mint' : ''}`}>{fmt(r)}</dd>
+              <dd className={`num text-end ${r.strong ? 'font-semibold text-mint' : ''}`}>{fmt(r, lang)}</dd>
             </div>
           ))}
         </dl>

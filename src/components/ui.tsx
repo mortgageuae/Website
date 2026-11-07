@@ -109,9 +109,9 @@ export function Facts({ facts }: { facts: [string, string][] }) {
   return (
     <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-card border border-line bg-line sm:grid-cols-3">
       {facts.map(([k, v]) => (
-        <div key={k} className="bg-white p-5">
+        <div key={k} className="bg-white p-5 max-sm:odd:last:col-span-2 sm:[&:nth-child(3n+1):last-child]:col-span-3">
           <dt className="text-xs font-medium uppercase tracking-wide text-slate">{k}</dt>
-          <dd className="num mt-1.5 text-lg font-semibold text-navy">{v}</dd>
+          <dd className={`mt-1.5 text-lg font-semibold text-navy ${/^[\d+−-]|^AED|^3M/.test(v) ? 'num' : 'font-display'}`}>{v}</dd>
         </div>
       ))}
     </dl>
